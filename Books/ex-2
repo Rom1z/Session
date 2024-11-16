@@ -1,0 +1,47 @@
+-- Создание базы данных
+CREATE DATABASE IF NOT EXISTS work_time_tracking;
+USE work_time_tracking;
+
+-- Таблица для хранения информации о подразделениях
+CREATE TABLE IF NOT EXISTS Departments (
+    department_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+-- Таблица для хранения информации о сотрудниках
+CREATE TABLE IF NOT EXISTS Employees (
+    employee_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    department_id INT,
+    password VARCHAR(100) NOT NULL,
+    role ENUM('Администратор', 'Сотрудник') NOT NULL,
+    FOREIGN KEY (department_id) REFERENCES Departments(department_id) ON DELETE SET NULL
+);
+
+-- Таблица для хранения информации о рабочем времени сотрудников
+CREATE TABLE IF NOT EXISTS WorkHours (
+    work_id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_id INT NOT NULL,
+    date DATE NOT NULL,
+    hours_worked DECIMAL(4, 2) NOT NULL,
+    description TEXT,
+    FOREIGN KEY (employee_id) REFERENCES Employees(employee_id) ON DELETE CASCADE
+);
+-- Добавление тестовых подразделений
+INSERT INTO Departments (name) VALUES
+('Отдел разработки'),
+('Отдел тестирования'),
+('Отдел поддержки');
+
+-- Добавление тестовых сотрудников
+INSERT INTO Employees (name, department_id, password, role) VALUES
+('admin', 1, 'adminpass', 'Администратор'),
+('Ivan Ivanov', 1, 'pass123', 'Сотрудник'),
+('Petr Petrov', 2, 'pass456', 'Сотрудник'),
+('Svetlana Sidorova', 3, 'pass789', 'Сотрудник');
+
+-- Добавление тестовых записей о рабочем времени
+INSERT INTO WorkHours (employee_id, date, hours_worked, description) VALUES
+(2, '2024-11-10', 8.00, 'Разработка новой функциональности'),
+(3, '2024-11-10', 7.50, 'Тестирование'),
+(4, '2024-11-10', 6.00, 'Техническая поддержка клиентов');
